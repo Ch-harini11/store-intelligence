@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app.database import get_db
-from app.models import DBEvent
-from app.schemas import EventCreate
+from app.db_models import DBEvent
+from app.models import EventCreate
 
 router = APIRouter()
 

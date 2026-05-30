@@ -4,6 +4,7 @@ from fastapi.responses import FileResponse
 import os
 
 from app.database import engine, Base
+from app.db_models import DBEvent
 from app.ingestion import router as ingest_router
 from app.analytics_router import router as analytics_router
 

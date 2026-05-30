@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import random
 import uuid
 
-from app.models import DBEvent
+from app.db_models import DBEvent
 
 def generate_mock_data(db: Session, store_id: str = "store_001"):
     # Clear existing events

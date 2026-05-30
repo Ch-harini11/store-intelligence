@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from sqlalchemy import func
 from sqlalchemy.orm import Session
-from app.models import DBEvent
+from app.db_models import DBEvent
 import uuid
 
 def detect_anomalies(db: Session, store_id: str):
@@ -9,11 +9,8 @@ def detect_anomalies(db: Session, store_id: str):
     now = datetime.now()
 
     # 1. Camera Failure Detection
-    # Detect if any camera hasn't sent any events in the last 2 minutes, provided there was some activity earlier.
-    # First, list all unique cameras that have ever sent events for this store
     cameras = db.query(DBEvent.camera_id).filter(DBEvent.store_id == store_id).distinct().all()
     for (camera_id,) in cameras:
-        # Find the latest event from this camera
         latest_event = db.query(DBEvent.timestamp).filter(
             DBEvent.store_id == store_id,
             DBEvent.camera_id == camera_id
@@ -21,7 +18,6 @@ def detect_anomalies(db: Session, store_id: str):
 
         if latest_event:
             latest_time = latest_event[0]
-            # If the difference is greater than 2 minutes
             if now - latest_time > timedelta(minutes=2):
                 anomalies.append({
                     "anomaly_id": str(uuid.uuid4()),
@@ -32,19 +28,16 @@ def detect_anomalies(db: Session, store_id: str):
                     "severity": "CRITICAL"
                 })
 
-    # 2. Long Queue Detection at Billing Counter
-    # Count the number of visitors who entered the Billing Counter zone in the last 15 minutes and haven't exited
+    # 2. Long Queue Detection
     billing_entries = db.query(DBEvent.visitor_id, DBEvent.timestamp).filter(
         DBEvent.store_id == store_id,
         DBEvent.event_type == "ZONE_ENTER",
         DBEvent.zone_id.like("%Billing%")
     ).all()
 
-    # Keep track of who is currently in queue
     in_queue = set()
     for entry in billing_entries:
         visitor_id, entry_time = entry
-        # Check if they exited the Billing Counter after this entry
         has_exited = db.query(DBEvent.event_id).filter(
             DBEvent.store_id == store_id,
             DBEvent.visitor_id == visitor_id,
@@ -67,7 +60,6 @@ def detect_anomalies(db: Session, store_id: str):
         })
 
     # 3. Sudden Footfall Spike Detection
-    # Count entries in last 5 minutes vs average entries per 5 minutes in previous 55 minutes
     five_mins_ago = now - timedelta(minutes=5)
     one_hour_ago = now - timedelta(minutes=60)
     
@@ -84,10 +76,8 @@ def detect_anomalies(db: Session, store_id: str):
         DBEvent.timestamp < five_mins_ago
     ).count()
 
-    # Average per 5-minute interval in the previous 55 minutes (11 intervals)
     avg_prev_5 = entries_prev_55 / 11.0 if entries_prev_55 > 0 else 0.0
 
-    # Trigger spike if last 5 mins has >= 5 entries AND is more than 3x the average of previous 5 mins
     if entries_last_5 >= 5 and (avg_prev_5 == 0 or entries_last_5 > 3 * avg_prev_5):
         anomalies.append({
             "anomaly_id": str(uuid.uuid4()),
@@ -99,11 +89,7 @@ def detect_anomalies(db: Session, store_id: str):
         })
 
     # 4. Empty Store During Business Hours
-    # Business hours: 9:00 AM to 9:00 PM (local time)
-    # Check if there are no active visitors in the store (entered but not exited)
     if 9 <= now.hour < 21:
-        # Check active visitors in the last 30 minutes
-        # Total entries in last 30 mins
         recent_entries = db.query(DBEvent.visitor_id).filter(
             DBEvent.store_id == store_id,
             DBEvent.event_type == "ENTRY",
