@@ -21,6 +21,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application
 COPY app/ app/
 COPY pipeline/ pipeline/
+COPY dashboard/ dashboard/
+COPY docs/ docs/
 
 # Expose FastAPI default port
 EXPOSE 8000
