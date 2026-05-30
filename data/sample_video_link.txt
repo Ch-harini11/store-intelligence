@@ -1,0 +1,22 @@
+# Purplle Store Intelligence System - CCTV Dataset Download Instructions
+
+To keep this code repository lightweight and optimized, raw video streams and large weight files are excluded. Follow the links below to download sample data for testing the YOLOv8 tracking pipeline.
+
+## 📹 Sample CCTV Video Feeds
+
+You can download realistic retail surveillance video feeds from public datasets:
+1. **Retail Store Surveillance Feed (Sample)**:
+   - Link: https://assets.mixkit.co/videos/preview/mixkit-interior-of-a-busy-fashion-retail-store-34444-large.mp4
+   - Description: Ideal for testing crowd tracking and shelf dwell times.
+2. **Retail Checkout Survelliance Feed**:
+   - Link: https://assets.mixkit.co/videos/preview/mixkit-young-woman-paying-for-her-purchases-at-a-cash-register-42312-large.mp4
+   - Description: Ideal for testing the Billing Counter queue length and purchase transition triggers.
+
+To run the pipeline on any of these feeds:
+```bash
+python pipeline/cv_pipeline.py --yolo https://assets.mixkit.co/videos/preview/mixkit-interior-of-a-busy-fashion-retail-store-34444-large.mp4
+```
+
+## 🧠 YOLO Model Weights
+
+The YOLOv8 model weights (`yolov8n.pt`) will be downloaded automatically by the `ultralytics` package upon the first execution. No manual weights download is required.

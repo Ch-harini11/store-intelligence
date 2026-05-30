@@ -1,13 +1,9 @@
-// Constant configuration
 const STORE_ID = "store_001";
 let funnelChart = null;
 
-// Initialize charts on page load
 document.addEventListener("DOMContentLoaded", () => {
     initCharts();
     refreshDashboard();
-    
-    // Auto-poll every 3 seconds for real-time intelligence feel
     setInterval(refreshDashboard, 3000);
 });
 
@@ -36,7 +32,7 @@ function initCharts() {
             }]
         },
         options: {
-            indexAxis: 'y', // Make it horizontal
+            indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
@@ -83,13 +79,11 @@ async function fetchMetrics() {
     document.getElementById("val-footfall").textContent = data.footfall.toLocaleString();
     document.getElementById("val-unique").textContent = data.unique_visitors.toLocaleString();
     
-    // Format Dwell Time
     const dwellSeconds = Math.round(data.avg_dwell_time_ms / 1000);
     const m = Math.floor(dwellSeconds / 60);
     const s = dwellSeconds % 60;
     document.getElementById("val-dwell").textContent = `${m}m ${s}s`;
     
-    // Format Peak Hour
     const hour = data.peak_hour;
     const ampm = hour >= 12 ? 'PM' : 'AM';
     const dispHour = hour % 12 === 0 ? 12 : hour % 12;
@@ -101,10 +95,8 @@ async function fetchFunnel() {
     if (!res.ok) throw new Error("Funnel fetch error");
     const data = await res.json();
     
-    // Update funnel conversion text rate
     document.getElementById("funnel-conversion-rate").textContent = `Conversion Rate: ${data.conversion_rate.toFixed(1)}%`;
     
-    // Update funnel chart
     if (funnelChart) {
         funnelChart.data.datasets[0].data = [
             data.visitors_entered,
@@ -120,7 +112,6 @@ async function fetchOccupancy() {
     if (!res.ok) throw new Error("Occupancy fetch error");
     const data = await res.json();
     
-    // Update floor occupancies
     document.getElementById("active-shopper-count").textContent = `${data.active_total} Active Shoppers`;
     
     document.getElementById("count-entrance").textContent = data.zones["Entrance"];
@@ -129,7 +120,6 @@ async function fetchOccupancy() {
     document.getElementById("count-billing").textContent = data.zones["Billing Counter"];
     document.getElementById("count-exit").textContent = data.zones["Exit"];
 
-    // Dynamic style update based on count presence
     const zoneElements = {
         "Entrance": "entrance",
         "Shelf A": "shelf-a",

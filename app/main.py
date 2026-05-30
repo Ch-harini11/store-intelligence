@@ -19,16 +19,13 @@ app = FastAPI(
 app.include_router(ingest_router)
 app.include_router(analytics_router)
 
-# Ensure static folder exists
-os.makedirs("app/static", exist_ok=True)
-
 # Mount Static Files (for CSS, JS, Images)
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+app.mount("/static", StaticFiles(directory="dashboard"), name="static")
 
 @app.get("/")
 def serve_dashboard():
     # Return the HTML dashboard directly at root
-    dashboard_path = os.path.join("app", "static", "index.html")
+    dashboard_path = os.path.join("dashboard", "index.html")
     if os.path.exists(dashboard_path):
         return FileResponse(dashboard_path)
     return {
