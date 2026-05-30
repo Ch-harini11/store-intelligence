@@ -17,7 +17,6 @@ def main():
     prs.slide_width = Inches(13.33)
     prs.slide_height = Inches(7.5)
 
-    # 1. Slide Layouts
     blank_layout = prs.slide_layouts[6]
 
     # Colors
@@ -173,7 +172,6 @@ def main():
         set_dark_background(slide)
         add_title(slide, sd["title"], sd["accent"])
         
-        # Add points
         tb = slide.shapes.add_textbox(Inches(0.75), Inches(1.8), Inches(11.83), Inches(5))
         tf = tb.text_frame
         tf.word_wrap = True
@@ -190,7 +188,6 @@ def main():
             p.font.color.rgb = c_white
             p.space_after = Pt(20)
 
-    # Ensure output directory exists
     os.makedirs("docs", exist_ok=True)
     out_path = os.path.join("docs", "presentation.pptx")
     prs.save(out_path)
