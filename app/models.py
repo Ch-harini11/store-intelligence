@@ -1,16 +1,17 @@
-from pydantic import BaseModel
-from typing import Optional
-from datetime import datetime
+from sqlalchemy import Column, String, Integer, Float, Boolean, DateTime, JSON
+from app.database import Base
 
-class Event(BaseModel):
-    event_id: str
-    store_id: str
-    camera_id: str
-    visitor_id: str
-    event_type: str
-    timestamp: datetime
-    zone_id: Optional[str] = None
-    dwell_ms: int = 0
-    is_staff: bool = False
-    confidence: float
-    metadata: dict = {}
+class DBEvent(Base):
+    __tablename__ = "events"
+
+    event_id = Column(String, primary_key=True, index=True)
+    store_id = Column(String, index=True, nullable=False)
+    camera_id = Column(String, nullable=False)
+    visitor_id = Column(String, index=True, nullable=False)
+    event_type = Column(String, nullable=False)  # ENTRY, EXIT, ZONE_ENTER, ZONE_EXIT, DWELL, PURCHASE
+    timestamp = Column(DateTime, nullable=False)
+    zone_id = Column(String, nullable=True)
+    dwell_ms = Column(Integer, default=0)
+    is_staff = Column(Boolean, default=False)
+    confidence = Column(Float, default=1.0)
+    metadata = Column(JSON, nullable=True)

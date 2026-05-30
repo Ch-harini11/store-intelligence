@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: store_intelligence_web
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persistent SQLite database mapping
+      - ./store.db:/workspace/store.db
+    restart: always
