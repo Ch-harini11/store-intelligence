@@ -39,7 +39,7 @@ def ingest_events(events: List[EventCreate], db: Session = Depends(get_db)):
             dwell_ms=event_data.dwell_ms,
             is_staff=event_data.is_staff,
             confidence=event_data.confidence,
-            metadata=event_data.metadata
+            event_metadata=event_data.metadata
         )
         new_events.append(db_event)
 

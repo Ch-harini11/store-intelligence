@@ -14,4 +14,4 @@ class DBEvent(Base):
     dwell_ms = Column(Integer, default=0)
     is_staff = Column(Boolean, default=False)
     confidence = Column(Float, default=1.0)
-    metadata = Column(JSON, nullable=True)
+    event_metadata = Column("metadata", JSON, nullable=True)

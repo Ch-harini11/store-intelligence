@@ -122,7 +122,7 @@ def generate_mock_data(db: Session, store_id: str = "store_001"):
                 dwell_ms=0,
                 is_staff=False,
                 confidence=0.99,
-                metadata={"amount": round(random.uniform(500, 5000), 2), "items": random.randint(1, 8)}
+                event_metadata={"amount": round(random.uniform(500, 5000), 2), "items": random.randint(1, 8)}
             ))
 
             t_current += timedelta(seconds=dwell_bill)
