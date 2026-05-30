@@ -76,6 +76,8 @@ Open your browser and navigate to **[http://127.0.0.1:8000/](http://127.0.0.1:80
 
 ---
 
+or you can just go with demo link --> https://store-intelligence-1-ro77.onrender.com
+
 ## 🐳 Docker Deployment
 
 To build and run the entire store intelligence web server in an isolated container:
